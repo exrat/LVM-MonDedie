@@ -20,7 +20,10 @@ CGREEN="${CSI}1;32m"
 CYELLOW="${CSI}1;33m"
 CBLUE="${CSI}1;34m"
 
+# Adaptez le variable VGNAME en fonction de votre VG perso si besoin,
+# une fonction de detection auto viendra plus tard...
 VGNAME="vghome"
+
 DEV="/dev/mapper"
 FSTAB="/etc/fstab"
 
