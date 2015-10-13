@@ -95,7 +95,7 @@ case $OPTION in
 	2)
 		# Ajout volume user
 		echo "" ; FONCUSER
-		FONCFREE
+		echo "" ; FONCFREE
 		echo "" ; FONCTAILLE
 		lvcreate -L "$TAILLE"G -n "$USER" "$VGNAME"
 		mkfs.ext4 "$DEV"/"$VGNAME"-"$USER"
