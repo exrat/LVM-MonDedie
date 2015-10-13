@@ -5,6 +5,7 @@ Note: Une partition /home séparé est indispensable !
 
 ## Utilisation:
 ````
+apt-get update && apt-get upgrade -y
 cd /tmp
 git clone https://github.com/exrat/LVM-MonDedie
 cd LVM-MonDedie
