@@ -150,7 +150,7 @@ case $OPTION in
 	* )
 		# Invalide
 		echo "" ; echo -e "${CRED}Choix Invalide${CEND}" ; echo ""
-		;;
+	;;
 
 esac
 done
