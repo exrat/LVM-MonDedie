@@ -44,7 +44,7 @@ TESTVG=$(lvm vgscan | sed '1d' |cut -d '"' -f2)
 if [ "$TESTVG" = "" ]; then
 	VG="$VGNAME"
 else
-    VG="$TESTVG"
+	VG="$TESTVG"
 fi
 }
 
