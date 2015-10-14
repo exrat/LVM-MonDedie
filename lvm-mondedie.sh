@@ -73,10 +73,11 @@ ${CEND}"
 while :; do
 echo -e "${CGREEN}Choisissez une option.${CEND}"
 echo -e "${CYELLOW} 1 ${CEND} Installation LVM"
-echo -e "${CYELLOW} 2 ${CEND} Ajout d'un volume utilisateur"
-echo -e "${CYELLOW} 3 ${CEND} Augmentation ou réduction d'un volume utilisateur"
-echo -e "${CYELLOW} 4 ${CEND} Suppression complète d'un volume utilisateur"
-echo -e "${CYELLOW} 5 ${CEND} Sortir"
+echo -e "${CYELLOW} 2 ${CEND} Rapport LVM"
+echo -e "${CYELLOW} 3 ${CEND} Ajout d'un volume utilisateur"
+echo -e "${CYELLOW} 4 ${CEND} Augmentation ou réduction d'un volume utilisateur"
+echo -e "${CYELLOW} 5 ${CEND} Suppression complète d'un volume utilisateur"
+echo -e "${CYELLOW} 6 ${CEND} Sortir"
 echo -n -e "${CGREEN}Entrez votre choix :${CEND} "
 read -r OPTION
 
@@ -101,7 +102,16 @@ case $OPTION in
 	;;
 
 	2)
-		# Ajout volume user
+		# Rapport LVM
+		echo "" ; echo -e "${CYELLOW}Attributs de groupes de volumes${CEND}" ; vgdisplay
+		echo "" ; echo -e "${CYELLOW}Informations sur les volumes physiques${CEND}" ; pvs
+		echo "" ; echo -e "${CYELLOW}Information sur les groupes de volumes${CEND}" ; vgs
+		echo "" ; echo -e "${CYELLOW}Informations sur les volumes logiques${CEND}" ; lvs
+		echo ""
+	;;
+
+	3)
+		# Ajout volume utilisateur
 		FONCVG
 		echo "" ; FONCUSER
 		echo "" ; FONCFREE
@@ -117,7 +127,7 @@ case $OPTION in
 		echo "" ; FONCFREE ; echo ""
 	;;
 
-	3)
+	4)
 		# Augmentation ou reduction de l'espace disque
 		FONCVG
 		echo "" ; FONCUSER
@@ -142,7 +152,7 @@ case $OPTION in
 		echo "" ; FONCFREE ; echo ""
 	;;
 
-	4)
+	5)
 		# Suppression d'un volume utilisateur
 		FONCVG
 		echo "" ; FONCUSER
@@ -152,7 +162,7 @@ case $OPTION in
 		echo "" ; FONCFREE ; echo ""
 	;;
 
-	5)
+	6)
 		# Sortie
 		echo "" ; break
 	;;
