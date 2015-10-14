@@ -129,14 +129,13 @@ case $OPTION in
 		SECURE=$((TAILLE-5))
 		resize2fs -p "$DEV"/"$VG"-"$USER" "$SECURE"G
 
-		if (($? <= 1)) ; then
-			echo
-			else
+		if [ $? -ge 2 ]  ; then
 			echo -e "${CRED}Une erreur rend l'opération impossible${CEND}"
 			exit
 		fi
 
 		lvresize -L "$TAILLE"G "$DEV"/"$VG"-"$USER"
+		sleep 3
 		resize2fs "$DEV"/"$VG"-"$USER"
 		mount "$DEV"/"$VG"-"$USER" /home/"$USER"
 		echo "" ; df -h /home/"$USER"
