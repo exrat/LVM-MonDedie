@@ -20,17 +20,15 @@ CGREEN="${CSI}1;32m"
 CYELLOW="${CSI}1;33m"
 CBLUE="${CSI}1;34m"
 
-# Adaptez le variable VGNAME en fonction de votre VG perso si besoin,
-# une fonction de detection auto viendra plus tard...
+# Ne rien modifier, la détection d'un VG existant est automatique
 VGNAME="vghome"
-
 DEV="/dev/mapper"
 FSTAB="/etc/fstab"
 
 # functions
 function FONCUSER ()
 {
-echo -e "${CGREEN}Entrez le nom d'user rutorrent pour le volume lvm :${CEND}"
+echo -e "${CGREEN}Entrez le nom de l'utilisateur rutorrent pour le volume lvm :${CEND}"
 read -r USER
 }
 
@@ -40,16 +38,26 @@ echo -e "${CGREEN}Entrez la taille de volume souhaité (en Go) :${CEND}"
 read -r TAILLE
 }
 
+function FONCVG ()
+{
+TESTVG=$(lvm vgscan | sed '1d' |cut -d '"' -f2)
+if [ "$TESTVG" = "" ]; then
+	VG="$VGNAME"
+else
+    VG="$TESTVG"
+fi
+}
+
 function FONCFREE ()
 {
-FREE=$( vgdisplay "$VGNAME" | grep -w Free)
+FREE=$( vgdisplay "$VG" | grep -w Free)
 echo -e "Place disponible\n${CYELLOW}$FREE${CEND}"
 }
 
 function FONCOCCUP ()
 {
-OCCUP=$( lvdisplay "$DEV"/"$VGNAME"-"$USER" | grep -w Size)
-echo -e "Place occupé par l'user\n${CYELLOW}$OCCUP${CEND}"
+OCCUP=$( lvdisplay "$DEV"/"$VG"-"$USER" | grep -w Size)
+echo -e "Place occupé par l'utilisateur\n${CYELLOW}$OCCUP${CEND}"
 }
 
 
@@ -74,7 +82,7 @@ read -r OPTION
 
 case $OPTION in
 
-	1 )
+	1)
 		# Installation LVM
 		TESTSDX=$( grep -w /home "$FSTAB" | cut -c 6-9)
 		if [ "$TESTSDX" = "" ]; then
@@ -94,31 +102,33 @@ case $OPTION in
 
 	2)
 		# Ajout volume user
+		FONCVG
 		echo "" ; FONCUSER
 		echo "" ; FONCFREE
 		echo "" ; FONCTAILLE
-		lvcreate -L "$TAILLE"G -n "$USER" "$VGNAME"
-		mkfs.ext4 "$DEV"/"$VGNAME"-"$USER"
+		lvcreate -L "$TAILLE"G -n "$USER" "$VG"
+		mkfs.ext4 "$DEV"/"$VG"-"$USER"
 		mkdir -p /home/"$USER"
-		mount "$DEV"/"$VGNAME"-"$USER" /home/"$USER"
-		echo "$DEV/$VGNAME-$USER        /home/$USER     ext4    defaults        0       2" >> "$FSTAB"
-		tune2fs -m 0 "$DEV"/"$VGNAME"-"$USER"
+		mount "$DEV"/"$VG"-"$USER" /home/"$USER"
+		echo "$DEV/$VG-$USER        /home/$USER     ext4    defaults        0       2" >> "$FSTAB"
+		tune2fs -m 0 "$DEV"/"$VG"-"$USER"
 		mount -o remount /home/"$USER"
 		echo "" ; df -h /home/"$USER"
 		echo "" ; FONCFREE ; echo ""
 	;;
 
 	3)
-		# Augmentation ou reduction de l'espace disque 
+		# Augmentation ou reduction de l'espace disque
+		FONCVG
 		echo "" ; FONCUSER
 		echo "" ; FONCFREE
 		echo "" ; FONCOCCUP
 		echo "" ; FONCTAILLE
 		umount /home/"$USER"/
-		e2fsck -f "$DEV"/"$VGNAME"-"$USER"
+		e2fsck -f "$DEV"/"$VG"-"$USER"
 		SECURE=$((TAILLE-5))
-		resize2fs -p "$DEV"/"$VGNAME"-"$USER" "$SECURE"G
-		# mettre controle pour au dessus
+		resize2fs -p "$DEV"/"$VG"-"$USER" "$SECURE"G
+
 		if (($? <= 1)) ; then
 			echo
 			else
@@ -126,19 +136,20 @@ case $OPTION in
 			exit
 		fi
 
-		lvresize -L "$TAILLE"G "$DEV"/"$VGNAME"-"$USER"
-		resize2fs "$DEV"/"$VGNAME"-"$USER"
-		mount "$DEV"/"$VGNAME"-"$USER" /home/"$USER"
+		lvresize -L "$TAILLE"G "$DEV"/"$VG"-"$USER"
+		resize2fs "$DEV"/"$VG"-"$USER"
+		mount "$DEV"/"$VG"-"$USER" /home/"$USER"
 		echo "" ; df -h /home/"$USER"
 		echo "" ; FONCFREE ; echo ""
 	;;
 
 	4)
 		# Suppression d'un volume utilisateur
+		FONCVG
 		echo "" ; FONCUSER
 		umount /home/"$USER"
-		lvremove /dev/"$VGNAME"/"$USER"
-		sed -i "/$VGNAME-$USER/d" "$FSTAB"
+		lvremove /dev/"$VG"/"$USER"
+		sed -i "/$VG-$USER/d" "$FSTAB"
 		echo "" ; FONCFREE ; echo ""
 	;;
 
@@ -147,7 +158,7 @@ case $OPTION in
 		echo "" ; break
 	;;
 
-	* )
+	*)
 		# Invalide
 		echo "" ; echo -e "${CRED}Choix Invalide${CEND}" ; echo ""
 	;;
