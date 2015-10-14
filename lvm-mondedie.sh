@@ -73,7 +73,7 @@ ${CEND}"
 while :; do
 echo -e "${CGREEN}Choisissez une option.${CEND}"
 echo -e "${CYELLOW} 1 ${CEND} Installation LVM"
-echo -e "${CYELLOW} 2 ${CEND} Ajout volume utilisateur"
+echo -e "${CYELLOW} 2 ${CEND} Ajout d'un volume utilisateur"
 echo -e "${CYELLOW} 3 ${CEND} Augmentation ou réduction d'un volume utilisateur"
 echo -e "${CYELLOW} 4 ${CEND} Suppression complète d'un volume utilisateur"
 echo -e "${CYELLOW} 5 ${CEND} Sortir"

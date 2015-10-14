@@ -1,7 +1,9 @@
 # Script d'installation & gestion LVM
 
 
-Note: Une partition /home séparé est indispensable pour l'installation !
+Une partition /home séparé est indispensable pour l'installation !
+
+La partie "Gestion" fonctionne sur VG préexistant, la détection du nom est automatique.
 
 ## Utilisation:
 ````
