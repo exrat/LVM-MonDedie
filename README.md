@@ -1,7 +1,7 @@
 # Script d'installation & gestion LVM
 
 
-Note: Une partition /home séparé est indispensable !
+Note: Une partition /home séparé est indispensable pour l'installation !
 
 ## Utilisation:
 ````
