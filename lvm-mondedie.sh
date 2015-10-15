@@ -52,13 +52,13 @@ fi
 function FONCFREE ()
 {
 FREE=$( vgdisplay "$VG" | grep -w Free)
-echo -e "Place disponible\n${CYELLOW}$FREE${CEND}"
+echo -e "${CBLUE}Place disponible${CEND} ${CRED}(en GiB)${CEND}\n${CYELLOW}$FREE${CEND}"
 }
 
 function FONCOCCUP ()
 {
 OCCUP=$( lvdisplay "$DEV"/"$VG"-"$USER" | grep -w Size)
-echo -e "Place occupé par l'utilisateur\n${CYELLOW}$OCCUP${CEND}"
+echo -e "${CBLUE}Place occupé par l'utilisateur${CEND} ${CRED}(en GiB)${CEND}\n${CYELLOW}$OCCUP${CEND}"
 }
 
 
@@ -108,7 +108,7 @@ case $OPTION in
 		echo "" ; echo -e "${CYELLOW}Informations sur les volumes physiques${CEND}" ; pvs
 		echo "" ; echo -e "${CYELLOW}Information sur les groupes de volumes${CEND}" ; vgs
 		echo "" ; echo -e "${CYELLOW}Informations sur les volumes logiques${CEND}" ; lvs
-		echo ""
+		echo -e "${CBLUE}Toutes les tailles sont données en${CEND} ${CRED}GiB${CEND}" ; echo ""
 	;;
 
 	3)
