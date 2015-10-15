@@ -35,7 +35,8 @@ read -r USER
 function FONCTAILLE ()
 {
 echo -e "${CGREEN}Entrez la taille de volume souhaité (en Go) :${CEND}"
-read -r TAILLE
+read -r GO
+TAILLE=$(echo "scale=2;((($GO/1000)*1024)*0.99)" | bc | sed "s/\./,/")
 }
 
 function FONCVG ()
