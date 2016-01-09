@@ -28,15 +28,15 @@ FSTAB="/etc/fstab"
 # functions
 function FONCUSER ()
 {
-echo -e "${CGREEN}Entrez le nom de l'utilisateur rutorrent pour le volume lvm :${CEND}"
+echo -e "${CGREEN}Entrez le nom de l'utilisateur ruTorrent pour le volume lvm :${CEND}"
 read -r USER
 }
 
 function FONCTAILLE ()
 {
-echo -e "${CGREEN}Entrez la taille de volume souhaité (en Go) :${CEND}"
-read -r GO
-TAILLE=$(echo "scale=2;((($GO/1000)*1024)*0.99)" | bc | sed "s/\./,/")
+echo -e "${CGREEN}Entrez la taille de volume souhaité (en GiB) :${CEND}"
+read -r GIB
+TAILLE=$(echo "scale=2 ; $GIB" | bc | cut -d. -f1)
 }
 
 function FONCVG ()
@@ -72,13 +72,15 @@ echo -e "${CBLUE}
 ${CEND}"
 
 while :; do
-echo -e "${CGREEN}Choisissez une option.${CEND}"
+echo -e "${CGREEN}Choisissez une option${CEND}"
 echo -e "${CYELLOW} 1 ${CEND} Installation LVM"
 echo -e "${CYELLOW} 2 ${CEND} Rapport LVM"
-echo -e "${CYELLOW} 3 ${CEND} Ajout d'un volume utilisateur"
-echo -e "${CYELLOW} 4 ${CEND} Augmentation ou réduction d'un volume utilisateur"
-echo -e "${CYELLOW} 5 ${CEND} Suppression complète d'un volume utilisateur"
-echo -e "${CYELLOW} 6 ${CEND} Sortir"
+echo -e "${CYELLOW} 3 ${CEND} Conversion Go en GiB"
+echo -e "    *****************************"
+echo -e "${CYELLOW} 4 ${CEND} Ajout d'un volume utilisateur"
+echo -e "${CYELLOW} 5 ${CEND} Augmentation ou réduction d'un volume utilisateur"
+echo -e "${CYELLOW} 6 ${CEND} Suppression complète d'un volume utilisateur"
+echo -e "${CYELLOW} 7 ${CEND} Sortir"
 echo -n -e "${CGREEN}Entrez votre choix :${CEND} "
 read -r OPTION
 
@@ -112,6 +114,14 @@ case $OPTION in
 	;;
 
 	3)
+		# Conversion
+		echo "" ; echo -e "${CBLUE}Entrez la taille en${CEND} ${CYELLOW}Go${CEND} ${CBLUE}souhaité pour la convertir en ${CYELLOW}GiB${CEND} ${CBLUE}:${CEND}"
+		read -r CONV
+		CONVGIB=$(echo "scale=2;((($CONV/1000)*1024)*0.99)" | bc | sed "s/\,/./")
+		echo -e "${CBLUE}La conversion pour "$CONV" Go est de :${CEND} ${CYELLOW}"$CONVGIB" GiB${CEND}" ; echo ""
+	;;
+
+	4)
 		# Ajout volume utilisateur
 		FONCVG
 		echo "" ; FONCUSER
@@ -128,7 +138,7 @@ case $OPTION in
 		echo "" ; FONCFREE ; echo ""
 	;;
 
-	4)
+	5)
 		# Augmentation ou reduction de l'espace disque
 		FONCVG
 		echo "" ; FONCUSER
@@ -153,7 +163,7 @@ case $OPTION in
 		echo "" ; FONCFREE ; echo ""
 	;;
 
-	5)
+	6)
 		# Suppression d'un volume utilisateur
 		FONCVG
 		echo "" ; FONCUSER
@@ -163,7 +173,7 @@ case $OPTION in
 		echo "" ; FONCFREE ; echo ""
 	;;
 
-	6)
+	7)
 		# Sortie
 		echo "" ; break
 	;;
