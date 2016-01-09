@@ -170,6 +170,8 @@ case $OPTION in
 		umount /home/"$USER"
 		lvremove /dev/"$VG"/"$USER"
 		sed -i "/$VG-$USER/d" "$FSTAB"
+		#test
+		rm -R /home/"$USER"
 		echo "" ; FONCFREE ; echo ""
 	;;
 
