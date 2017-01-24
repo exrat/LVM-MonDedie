@@ -26,39 +26,34 @@ DEV="/dev/mapper"
 FSTAB="/etc/fstab"
 
 # functions
-function FONCUSER ()
-{
-echo -e "${CGREEN}Entrez le nom de l'utilisateur ruTorrent pour le volume lvm :${CEND}"
-read -r USER
+FONCUSER () {
+	echo -e "${CGREEN}Entrez le nom de l'utilisateur ruTorrent pour le volume lvm :${CEND}"
+	read -r USER
 }
 
-function FONCTAILLE ()
-{
-echo -e "${CGREEN}Entrez la taille de volume souhaité (en GiB) :${CEND}"
-read -r GIB
-TAILLE=$(echo "scale=2 ; $GIB" | bc | cut -d. -f1)
+FONCTAILLE () {
+	echo -e "${CGREEN}Entrez la taille de volume souhaité (Chiffre rond sans virgule et en GiB) :${CEND}"
+	read -r GIB
+	TAILLE=$(echo "scale=2 ; $GIB" | bc | cut -d. -f1)
 }
 
-function FONCVG ()
-{
-TESTVG=$(lvm vgscan | sed '1d' |cut -d '"' -f2)
-if [ "$TESTVG" = "" ]; then
-	VG="$VGNAME"
-else
-	VG="$TESTVG"
-fi
+FONCVG () {
+	TESTVG=$(lvm vgscan | sed '1d' |cut -d '"' -f2)
+	if [ "$TESTVG" = "" ]; then
+		VG="$VGNAME"
+	else
+		VG="$TESTVG"
+	fi
 }
 
-function FONCFREE ()
-{
-FREE=$( vgdisplay "$VG" | grep -w Free)
-echo -e "${CBLUE}Place disponible${CEND} ${CRED}(en GiB)${CEND}\n${CYELLOW}$FREE${CEND}"
+FONCFREE () {
+	FREE=$( vgdisplay "$VG" | grep -w Free)
+	echo -e "${CBLUE}Place disponible${CEND} ${CRED}(en GiB)${CEND}\n${CYELLOW}$FREE${CEND}"
 }
 
-function FONCOCCUP ()
-{
-OCCUP=$( lvdisplay "$DEV"/"$VG"-"$USER" | grep -w Size)
-echo -e "${CBLUE}Place occupé par l'utilisateur${CEND} ${CRED}(en GiB)${CEND}\n${CYELLOW}$OCCUP${CEND}"
+FONCOCCUP () {
+	OCCUP=$( lvdisplay "$DEV"/"$VG"-"$USER" | grep -w Size)
+	echo -e "${CBLUE}Place occupé par l'utilisateur${CEND} ${CRED}(en GiB)${CEND}\n${CYELLOW}$OCCUP${CEND}"
 }
 
 
@@ -97,6 +92,7 @@ case $OPTION in
 		fi
 
 		apt-get install lvm2
+		sed -i "s/use_lvmetad = 0/use_lvmetad = 1/g;" /etc/lvm/lvm.conf
 		umount /home
 		sed -i "/$SDX/d" "$FSTAB"
 		pvcreate /dev/"$SDX"
